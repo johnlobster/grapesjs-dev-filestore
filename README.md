@@ -3,6 +3,15 @@
 
 Under development DO NOT USE
 
+Modify webpack-dev-server so that it can load/save files
+
+https://webpack.js.org/configuration/dev-server/
+
+https://webpack.js.org/guides/development/
+use webpack-dev-middleware
+
+and express
+
 GrapesJS storage wrapper for local system. Probably only useful for development. Read and write grapesjs data files to local filesystem.
 
 Requires GrapesJS v0.14.15 or higher

@@ -29,11 +29,15 @@ module.exports = (env = {}) => {
     entry: './src',
     mode: isProd ? 'production' : 'development',
     devtool: isProd ? 'source-map' : 'cheap-module-eval-source-map',
+    devServer: {
+      port: 8080
+    },
     output: {
         path: path.resolve(__dirname),
         filename: `dist/${name}.min.js`,
         library: name,
         libraryTarget: 'umd',
+        publicPath: '/'
     },
     module: {
       rules: [{

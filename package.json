@@ -7,7 +7,8 @@
     "lint": "eslint src",
     "v:patch": "npm version --no-git-tag-version patch",
     "build": "npm run v:patch && webpack --env.production",
-    "start": "webpack-dev-server --open --progress --colors"
+    "start": "webpack-dev-server --open --progress --colors",
+    "server": "node dev-server.js"
   },
   "repository": {
     "type": "git",
@@ -37,9 +38,11 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "eslint": "^4.19.1",
+    "express": "^4.17.1",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.1.2",
+    "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.1.4"
   }
 }
