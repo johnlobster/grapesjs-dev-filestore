@@ -7,6 +7,7 @@ GrapesJS storage wrapper for local system. Probably only useful for development.
 
 Requires GrapesJS v0.14.15 or higher
 
+Based on artf/grapesjs-firestore
 
 ## Summary
 

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>GrapesJS Firebase</title>
+    <title>GrapesJS dev-filestore storage manager</title>
     <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
     <script src="https://unpkg.com/grapesjs"></script>
     <script src="dist/grapesjs-firestore.min.js"></script>
@@ -24,6 +24,15 @@
         This is a demo content from index.html. For the development, you shouldn't edit this file, instead you can
         copy and rename it to _index.html, on next server start the new file will be served, and it will be ignored by git.
       </div>
+      <h3 >Title Heading</h3>
+      <p >Lorem ipsum dolor sit amet, consectetur adipisicing
+        elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+        anim id est laborum.</p>
+      </div>
     </div>
 
 
@@ -32,19 +41,19 @@
         height: '100%',
         showOffsets: 1,
         noticeOnUnload: 0,
-        storageManager: { type: 'firestore' },
+        storageManager: { type: 'dev-filestore' },
         container: '#gjs',
         fromElement: true,
 
-        plugins: ['grapesjs-firestore'],
-        pluginsOpts: {
-          'grapesjs-firestore': {
-            docId: 'someID',
-            apiKey: '***',
-            authDomain: '***.firebaseapp.com',
-            projectId: '***',
-          }
-        }
+        plugins: ['grapesjs-dev-filestore']
+        // pluginsOpts: {
+        //   'grapesjs-firestore': {
+        //     docId: 'someID',
+        //     apiKey: '***',
+        //     authDomain: '***.firebaseapp.com',
+        //     projectId: '***',
+        //   }
+        // }
       });
 
       editor.on('storage:load', function(e) {

@@ -8,6 +8,9 @@ let plugins = [];
 
 module.exports = (env = {}) => {
   const isProd = env.production;
+  console.log("Webpack env");
+  console.log(env);
+
 
   if (isProd) {
     plugins = [

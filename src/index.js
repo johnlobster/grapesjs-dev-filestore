@@ -1,94 +1,81 @@
 import grapesjs from 'grapesjs';
+import fs from "fs";
 
-export default grapesjs.plugins.add('grapesjs-firestore', (editor, opts = {}) => {
+// Saving as files so doesn't need to be serialized. Instead of altering the editor or storageManger
+// deserialize before saving files, one file for each key in data
+// checks to see if directory exists and creates it if necessary before defining load and save
+export default grapesjs.plugins.add('grapesjs-dev-filestore', (editor, opts = {}) => {
   const options = { ...{
-    // Firebase API key
-    apiKey: '',
-
-    // Firebase Auth domain
-    authDomain: '',
-
-    // Cloud Firestore project ID
-    projectId: '',
-
-    // Document id
-    docId: 'gjs',
-
-    // Collection name
-    collectionName: 'templates',
-
-    // Enable support for offline data persistence
-    enableOffline: true,
-
-    // Database settings (https://firebase.google.com/docs/reference/js/firebase.firestore.Settings)
-    settings: { timestampsInSnapshots: true },
+    directory: "grapesjs-data",
+    baseFileName: "grapesjs"
   },  ...opts };
 
   const sm = editor.StorageManager;
-  const storageName = 'firestore';
-
-  let db;
-  let doc;
-  let docId;
-  let collection;
-  const apiKey = options.apiKey;
-  const authDomain = options.authDomain;
-  const projectId = options.projectId;
-  const dbSettings = options.settings;
+  const storageName = 'dev-filestore';
   const onError = err => sm.onError(storageName, err.code || err);
 
-  const getDoc = () => doc;
-  const getDocId = () => docId || options.docId;
-
-  const getAsyncCollection = (clb) => {
-    if (collection) return clb(collection);
-    firebase.initializeApp({ apiKey, authDomain, projectId });
-    const fs = firebase.firestore();
-    fs.settings(dbSettings);
-
-    const callback = () => {
-      db = firebase.firestore();
-      collection = db.collection(options.collectionName);
-      clb(collection);
+  // check to see if directory exists, only need to run this on initialization
+  ( () => {
+    if (!fs.existsSync(directory)) {
+      console.log("Create new directory " + directory);
+      fs.mkdirSync(directory);
     }
-
-    if (options.enableOffline) {
-      fs.enablePersistence().then(callback).catch(onError);
-    } else {
-      callback();
-    }
-  };
-
-  const getAsyncDoc = (clb) => {
-    getAsyncCollection(cll => {
-      doc = cll.doc(getDocId());
-      clb(doc);
-    });
-  };
+  })()
 
   sm.add(storageName, {
-    getDoc,
-
-    getDocId,
-
-    setDocId(id) {
-      docId = id;
-    },
 
     load(keys, clb, clbError) {
-      getAsyncDoc(doc => {
-        doc.get()
-        .then(doc => doc.exists && clb(doc.data()))
-        .catch(clbError);
-      });
+      let filename = `${directory}/${baseFileName}-all.json`
+
+      fs.loadFile(filename, (err,data) => {
+        if (err) {
+          console.log("Error reading file " + filename);
+          clbError();
+        } else {
+          clb(data);
+        }
+      })
     },
 
+    //   const result = {};
+
+    //   keys.forEach(key => {
+    //     const value = SimpleStorage[key];
+    //     if (value) {
+    //       result[key] = value;
+    //     }
+    //   });
+
+    //   // Might be called inside some async method
+    //   clb(result);
+
     store(data, clb, clbError) {
-      getAsyncDoc(doc => {
-        doc.set(data)
-        .then(clb)
-        .catch(clbError);
-      });
-    }
+      for (let key in data) {
+        let filename = `${directory}/${baseFileName}-all.json`
+        fs.writeFile(filename, data, "utf-8", (err) => {
+          if ( err ) {
+            console.log("Error writing file " + filename);
+            clbError();
+          } else {
+            console.log("Saved " + filename);
+            clb();
+          }
+          
+        });
+      }
+      // for (let key in data) {
+      //   let filename = `${directory}/${baseFileName}-${key}.json`
+      //   fs.writeFile(filename, data, "utf-8", (err) => {
+      //     if (err) {
+      //       console.log("Error writing file " + filename);
+      //       clbError();
+      //     } else {
+      //       console.log("Saved " + filename);
+      //       clb();
+      //     }
+
+      //   });
+      }
+    
   });
 });
