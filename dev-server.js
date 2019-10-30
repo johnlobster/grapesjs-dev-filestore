@@ -11,35 +11,34 @@ const compiler = webpack(config);
 const directory = "data";
 const baseFileName = "grapesjs";
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
-// Tell express to use the webpack-dev-middleware and use the webpack.config.js
-// configuration file as a base.
-app.use(webpackDevMiddleware(compiler, {
-  publicPath: config.output.publicPath,
-}));
-
-// create data directory if it doesn't already exist
-if (!fs.existsSync(path.join(__dirname,directory))) {
-  console.log("Create new directory " + directory);
-  fs.mkdirSync(path.join(__dirname,directory));
-}
-
+// logging middleware
+app.use(function (req, res, next) {
+  console.log("Accessed dev server");
+  console.log("Method: " + req.method + " URL : " + req.url);
+  next();
+});
 
 let filename = `${directory}/${baseFileName}-all.json`
+// create data directory if it doesn't already exist
+if (!fs.existsSync(path.join(__dirname, directory))) {
+  console.log("Create new directory " + directory);
+  fs.mkdirSync(path.join(__dirname, directory));
+}
 
 app.get("/load-template", (req, res) => {
 
   if (!fs.existsSync(path.join(__dirname, directory))) {
     fs.loadFile(filename, (err, data) => {
       if (err) {
-        console.log("Error reading file " + filename +err);
-        res.status(500).json({ message: "server error, error reading file " + filename + " Error: " + err});
+        console.log("Error reading file " + filename + err);
+        res.status(500).json({ message: "server error, error reading file " + filename + " Error: " + err });
       } else {
         console.log("Read file " + filename);
         res.json(data);
       }
-        
+
     });
   } else {
     console.log("ERROR - could not find file " + filename);
@@ -47,8 +46,7 @@ app.get("/load-template", (req, res) => {
   }
 });
 
-app.post("/save-template", (req, res) => {
-
+app.post("/store-template", (req, res) => {
   fs.writeFile(filename, req.data, (err) => {
     if (err) {
       console.log("Error writing file " + filename);
@@ -60,6 +58,19 @@ app.post("/save-template", (req, res) => {
     }
   });
 });
+
+
+// Tell express to use the webpack-dev-middleware and use the webpack.config.js
+// configuration file as a base.
+app.use(webpackDevMiddleware(compiler, {
+  publicPath: config.output.publicPath,
+}));
+
+
+app.get("*", function (req, res) 
+{ res.sendFile(path.join(__dirname, "index.html")); });
+
+
 
 // Serve the files
 app.listen(PORT, function () {

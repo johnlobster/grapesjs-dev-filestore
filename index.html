@@ -5,6 +5,7 @@
     <title>GrapesJS dev-filestore storage manager</title>
     <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
     <script src="https://unpkg.com/grapesjs"></script>
+    <script src= "/src/remote-test.js"></script>
     <style>
       body,
       html {
@@ -38,9 +39,10 @@
         showOffsets: 1,
         noticeOnUnload: 0,
         storageManager: { 
-          type: 'remote',
+          type: 'remote-test',
           urlStore: '/store-template',
-          urlLoad: '/load-template'
+          urlLoad: '/load-template',
+          autoload: 0
         },
         container: '#gjs',
         fromElement: true,
@@ -54,6 +56,31 @@
         //     projectId: '***',
         //   }
         // }
+      });
+      let pnm = editor.Panels;
+      pnm.addButton('options', {
+          id: 'saveMe',
+          className: 'fa fa-paper-plane',
+          command: (e) => {
+            console.log("saveMe");
+            console.log(e);
+            e.store();
+          },
+          attributes: {
+            'title': 'FS save',
+            'data-tooltip-pos': 'bottom',
+          },
+      });
+      pnm.addButton('options', {
+          id: 'loadMe',
+          className: 'fa fa-file-alt',
+          command: (editor) => {
+            editor.load();
+          },
+          attributes: {
+            'title': 'FS load',
+            'data-tooltip-pos': 'bottom',
+          },
       });
 
       editor.on('storage:load', function(e) {

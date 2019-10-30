@@ -1,28 +1,30 @@
 import grapesjs from 'grapesjs';
 
 export default grapesjs.plugins.add('grapesjs-firestore', (editor, opts = {}) => {
-  const options = { ...{
-    // Firebase API key
-    apiKey: '',
+  const options = {
+    ...{
+      // Firebase API key
+      apiKey: '',
 
-    // Firebase Auth domain
-    authDomain: '',
+      // Firebase Auth domain
+      authDomain: '',
 
-    // Cloud Firestore project ID
-    projectId: '',
+      // Cloud Firestore project ID
+      projectId: '',
 
-    // Document id
-    docId: 'gjs',
+      // Document id
+      docId: 'gjs',
 
-    // Collection name
-    collectionName: 'templates',
+      // Collection name
+      collectionName: 'templates',
 
-    // Enable support for offline data persistence
-    enableOffline: true,
+      // Enable support for offline data persistence
+      enableOffline: true,
 
-    // Database settings (https://firebase.google.com/docs/reference/js/firebase.firestore.Settings)
-    settings: { timestampsInSnapshots: true },
-  },  ...opts };
+      // Database settings (https://firebase.google.com/docs/reference/js/firebase.firestore.Settings)
+      settings: { timestampsInSnapshots: true },
+    }, ...opts
+  };
 
   const sm = editor.StorageManager;
   const storageName = 'firestore';
@@ -78,17 +80,18 @@ export default grapesjs.plugins.add('grapesjs-firestore', (editor, opts = {}) =>
     load(keys, clb, clbError) {
       getAsyncDoc(doc => {
         doc.get()
-        .then(doc => doc.exists && clb(doc.data()))
-        .catch(clbError);
+          .then(doc => doc.exists && clb(doc.data()))
+          .catch(clbError);
       });
     },
 
     store(data, clb, clbError) {
       getAsyncDoc(doc => {
         doc.set(data)
-        .then(clb)
-        .catch(clbError);
+          .then(clb)
+          .catch(clbError);
       });
     }
   });
 });
+
