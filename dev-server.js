@@ -1,6 +1,7 @@
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
+const open = require("open"); // allows dev-server to open browser
 const fs = require("fs");
 const path = require("path");
 
@@ -17,6 +18,8 @@ const PORT = process.env.PORT || 8001;
 app.use(function (req, res, next) {
   console.log("Accessed dev server");
   console.log("Method: " + req.method + " URL : " + req.url);
+  console.log(req.body);
+  console.log(req.data);
   next();
 });
 
@@ -75,4 +78,10 @@ app.get("*", function (req, res)
 // Serve the files
 app.listen(PORT, function () {
   console.log('Dev server listening on port ' + PORT + '\n');
+  open( `localhost:${PORT}`, (err) => {
+    if (err) {
+      console.log(`Error opening browser at localhost:${PORT}`);
+      throw new Error(err);
+    }
+  })
 });
